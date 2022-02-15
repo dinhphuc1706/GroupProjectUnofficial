@@ -12,19 +12,20 @@ import { Size } from 'react-native-ui-lib/generatedTypes/src/components/skeleton
 import { firebase } from '../firebase/config.js'
 
 //component = function
-function SigninScreen(navigation)
+function SigninScreen({navigation})
 {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
     const onFooterLinkPress = () => {
-        navigation.navigate('Signup')
+        navigation.navigate("SignupScreen")
     }
 
     const onLoginPress = () => {
         firebase
             .auth()
             .signInWithEmailAndPassword(email, password)
+            
             .then((response) => {
                 //if match then return user information
                 const uid = response.user.uid
@@ -33,12 +34,37 @@ function SigninScreen(navigation)
                     .doc(uid)
                     .get()
                     .then(firestoreDocument => {
+                        //Change from this
                         if (!firestoreDocument.exists) {
                             alert("User does not exist anymore.")
                             return;
                         }
-                        const user = firestoreDocument.data()
-                        navigation.navigate.navigate('Home', {user: user})
+                        // const user = firestoreDocument.data()
+                        // navigation.navigate("Tabs",  /*{user: user}*/)
+                        switch (firestoreDocument.data().roles) {
+                            case "Unsubcribe":
+                                alert("You are Unsubcriber");
+                                //const user = firestoreDocument.data();
+                                navigation.navigate("FreeScreen",  /*{user: user}*/)
+                                break;
+                            case "Subcribe":
+                                alert("You are Premium");
+                                navigation.navigate("Tabs");
+                                break;
+                            case "PT":
+                                alert("Welcome PT!");
+                                navigation.navigate("PTHome");
+                                break;
+                            case "Manager":
+                                alert("Welcome Manager!");
+                                navigation.navigate("ManagerHome");
+                                break;
+                            default:
+                                alert("You Computer has been hacked!");
+                                break;
+                        }
+                        
+
                     })
                     .catch(error => {
                         alert(error)
@@ -55,15 +81,12 @@ function SigninScreen(navigation)
         flex: 1
         
     }}>
-        <View style={{
-            
-            flex:1
-        }}></View>
+        
 
         <View style={{        
             alignItems: 'center',   
-            marginHorizontal:1,
-            flex : 1,
+            marginTop: 100,
+           
             
         }}>
             <Text style={{
@@ -76,7 +99,7 @@ function SigninScreen(navigation)
 
         <View style={{
             
-            flex:4
+            
         }}>
             <View style={{
                 flexDirection: 'row',
@@ -93,12 +116,16 @@ function SigninScreen(navigation)
             }}>                                    
                 <TextInput style={{
                     marginLeft:20,
-                    fontSize:25,
-                    
+                    fontSize:25,                
                 }}
-                    placeholder= 'Username'
-                    keyboardType='number-pad'
-                    maxLength = {3}    
+                    
+                    placeholder='E-mail'
+                    placeholderTextColor="#aaaaaa"
+                    onChangeText={(text) => setEmail(text)}
+                    value={email}
+                    underlineColorAndroid="transparent"
+                    autoCapitalize="none"  
+                    
                 />
                    
                 <View style={{flex:1}}/> 
@@ -115,7 +142,7 @@ function SigninScreen(navigation)
                 height: 60,
                 alignItems: 'center',
                 borderColor: '#6666FF',
-                borderWidth: 2
+                borderWidth: 2,
                 
             }}>                                    
                 <TextInput style={{
@@ -123,9 +150,14 @@ function SigninScreen(navigation)
                     fontSize:25,
                     
                 }}
-                    placeholder= 'Password'
-                    keyboardType= 'decimal-pad'
-                    maxLength = {6}    
+                    placeholderTextColor="#aaaaaa"
+                    secureTextEntry
+                    placeholder='Password'
+                    onChangeText={(text) => setPassword(text)}
+                    value={password}
+                    underlineColorAndroid="transparent"
+                    autoCapitalize="none"
+
                 />
                    
                 <View style={{flex:1}}/>       
@@ -136,30 +168,31 @@ function SigninScreen(navigation)
 
         <View style={{        
             alignItems:'center',
-            flex : 5,
+            
             
         }}>
-            <Text style={{
-                
-                color: "black",
-                fontSize: 15,
-
-            }}> Don't have an account? <Text onPress={onFooterLinkPress}>Sign up</Text></Text>
+            
+                <Text 
+                onPress={( )=> navigation.navigate("SignupScreen")} 
+                style={{
+                    color: "black",
+                    fontSize: 20,
+                    marginTop:250,
+                    textDecorationLine: 'underline',
+                }}>Don't have an account? Sign up</Text>
+            
         </View>
 
         <View style={{
-            
-            flex: 2,
-            
+             
         }}>
             <TouchableOpacity
-                style={{
-                
+                style={{               
                 backgroundColor: '#6666FF',
                 borderRadius:20,
                 height: 55,
                 marginHorizontal: 50,
-                marginVertical:10,
+                marginVertical:20,
                 justifycontent: 'center',
                 alignItems: 'center',
                 }}
@@ -169,8 +202,6 @@ function SigninScreen(navigation)
                     color: 'white',
                     fontSize:23,
                     marginVertical: 10,
-                
-
                 }}>Login
                 </Text>
 

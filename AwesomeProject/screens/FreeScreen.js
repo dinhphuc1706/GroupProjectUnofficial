@@ -7,13 +7,44 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
-
+  import {
+    getFirestore,
+    query,
+    getDocs,
+    collection,
+    doc,
+    setDoc,
+    where,
+    addDoc,
+  } from "firebase/firestore";
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
+import { firebase, auth, db, storage } from '../firebase/config.js'
 //component = function
-function HomeScreen({navigation}) {
+function FreeScreen({navigation}) {
+  const getPremium = () => {
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            const uid = user.uid;
+            const usersRef = firebase.firestore().collection('users')
+                usersRef
+                    .doc(uid)
+                    .update({ roles: "Subcribe" })
+                    .then(() => {
+                        navigation.navigate("SigninScreen")
+                    })
+                    .catch((error) => {
+                        alert(error)
+                    });
+          // ...
+        } else {
+            alert('Cannot find user information')
+        }
+    });
+}
   return (
     <View
       style={{
-        backgroundColor: '#F0F8FF',
+        backgroundColor: '#f7fafe',
         flex: 100,
       }}>
       <View
@@ -58,19 +89,18 @@ function HomeScreen({navigation}) {
         />
         
       </View>
-      
       <View
         style={{
           flex: 50,
           width: '100%',
+          flexDirection:"column",
         }}>
         <View
           style={{
             flexDirection: 'row',
           }}>
-
           <TouchableOpacity
-            onPress={( )=> navigation.navigate("SelectWorkout")}  
+            onPress={() => navigation.navigate('SelectWorkoutFree')}
             style={{
               backgroundColor: '#6666FF',
               borderRadius: 20,
@@ -89,11 +119,10 @@ function HomeScreen({navigation}) {
               }}>
               Workouts
             </Text>
-            
-              
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={( )=> navigation.navigate("PersonalTrainer")}
+            onPress={getPremium}
+            
             style={{
               backgroundColor: '#ef7171',
               borderRadius: 20,
@@ -110,14 +139,35 @@ function HomeScreen({navigation}) {
                 fontSize: 23,
                 marginVertical: 7,
               }}>
-              P.Trainer
+              Get premium 
             </Text>
           </TouchableOpacity>
-          
         </View>
+        <TouchableOpacity
+            onPress={() => navigation.navigate('SigninScreen')}
+            style={{
+              backgroundColor: '#ef7171',
+              borderRadius: 20,
+              height: 50,
+              marginHorizontal: 25,
+              marginVertical: 10,
+              justifycontent: 'center',
+              alignItems: 'center',
+              width: 150,
+            }}>
+            <Text
+              style={{
+                color: 'white',
+                fontSize: 23,
+                marginVertical: 7,
+              }}>
+              sign in
+            </Text>
+          </TouchableOpacity>
+
       </View>
     </View>
   );
 }
 
-export default HomeScreen;
+export default FreeScreen;

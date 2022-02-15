@@ -22,15 +22,24 @@ import Nutrition from '../screens/Nutrition'
 import HomeScreen from '../screens/HomeScreen'
 import LookingScreen from '../screens/LookingScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import WellcomeScreen from '../screens/WellcomeScreen';
+
+
 
 
 import {
   MyStackHome,
-  MyStackDiscorver,  
+  MyStackDiscorver,
+  MyStackInsight,
+  MyStackProfile,
 } from './MyStack';
 
 
 const Tab = createBottomTabNavigator();
+
+
+
+
 
 
 const CustomTabBarButton = ({children, onPress}) => (
@@ -38,7 +47,7 @@ const CustomTabBarButton = ({children, onPress}) => (
     style={{
       top:-2,
       justifyContent:'center',
-      alignItems: 'center',
+      alignItems:'center',
 
     }}
     onPress={onPress}
@@ -58,7 +67,7 @@ const CustomTabBarButton = ({children, onPress}) => (
           shadowOpacity: 1.44,
           shadowRadius: 2.5,
 
-          elevation: 3,
+          elevation: 2,
 
         }}>
           {children}
@@ -77,12 +86,11 @@ const Tabs = () => {
         tabBarHideOnKeyboard: 'true',
         tabBarStyle: { 
             flexDirection: 'row',
-            
             position: 'absolute',
             width: '85%',
             height: 60,
             marginHorizontal: 30,
-            marginVertical:50,
+            marginVertical:30,
             borderRadius:40, 
             
         }  
@@ -111,9 +119,14 @@ const Tabs = () => {
                     fontSize:12,
                     fontWeight:'500',
                   }}>Home</Text>
-              </View>    
-          ),
-        }}/>
+              </View>
+            ),
+          }}
+          
+        
+        
+        
+        />
        
         <Tab.Screen name="Discover" component={MyStackDiscorver} options={{
             tabBarIcon: ({focused}) =>(
@@ -162,7 +175,7 @@ const Tabs = () => {
           }}
         />
 
-        <Tab.Screen name="Insights" component={LookingScreen} options={{
+        <Tab.Screen name="Insights" component={MyStackInsight} options={{
             tabBarIcon: ({focused}) =>(
               <View style={{
                   alignItems: 'center',
@@ -187,7 +200,8 @@ const Tabs = () => {
               </View>    
           ),
         }} />
-        <Tab.Screen name="Profile" component={ProfileScreen} options={{
+        <Tab.Screen name="Profile" component={MyStackProfile} 
+            options={{
             tabBarIcon: ({focused}) =>(
               <View style={{
                   alignItems: 'center',
@@ -211,11 +225,14 @@ const Tabs = () => {
               </View>    
           ),
         }}/>
-    </Tab.Navigator>
 
-    
+        
+
+
+    </Tab.Navigator>
   );
 }
+
 
 
 export default Tabs
